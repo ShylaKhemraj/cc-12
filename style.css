@@ -1,0 +1,16 @@
+svg {
+    font: 10px sans-serif;
+}
+.line {
+    fill: none;
+    stroke: steelblue;
+    stroke-width: 2px;
+}
+.overlay {
+    fill: none;
+    pointer-events: all;
+}
+.focus circle {
+    fill: none;
+    stroke: steelblue;
+}
