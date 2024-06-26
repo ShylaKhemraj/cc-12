@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, intial-scale=1.0">
+    <title>Stock Data Visualization</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+</head>
+<body>
+    <svg width="960" height="500"></svg>
+    <script src="js/script.js"></script>
+    <h1>Stock Data Visualization</h1>
+    <form id="filterForm">
+        <label form="fileInput">Upload CSV file:</label>
+        <input type="file" id="fileInput" accept=".csv"><br><br>
+
+        <label for="stockName">Stock Name:</label>
+        <input type="text" id="stockName"><br><br>
+
+        <lable for="startDate">Start Date:</lable>
+        <input type="date" id="startDate"><br><br>
+
+        <label got="endDate">End Date:</label>
+        <input type="date" id="endDate"><br><br>
+
+        <button type="button" onclick="filterData()">Filter Data</button>
+    </form>
+    <h2>Filtered Data:</h2>
+    <div id="result"></div>
+
+    <script>
+        let stockData = [];
+
+        document.getElementById('fileInput').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) [
+                Papa.parse(file, {
+                    header: true,
+                    dynamicTyping: true,
+                }),
+            ]
+        });
+
+        function filterData() {
+            const stockName = document.getElementById('stockName').value;
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+
+            let filteredData = stockData;
+
+            if (stockName) {
+                filteredData = filteredData.filter(item => item.StockName === stockName);
+            }
+            if (startDate && endDate){
+                filteredData = filteredData.filter(item => {
+                    const date = new Date(item.date);
+                    return date >= new Date(startDate) && date <= new Date(endDate);
+                });
+            }}
+
+            displayData(filteredData);
+
+            function displayData(data) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '';
+
+            if (data.length === 0) {
+                resultDiv.innerHTML = 'No data found.';
+                return;
+            }
+
+            const table = document.createElement('table');
+            const headerRow = document.createElement('tr');
+
+            Object.keys(data[0]).forEach(key => {
+                const th = document.createElement('th');
+                th.textContent = key;
+                headerRow.appendChild(th);
+            });
+
+            table.appendChild(headerRow);
+
+            data.forEach(row => {
+                const tr = document.createElement('tr');
+                Object.values(row).forEach(value => {
+                    const td = document.createElement('td');
+                    td.textContent = value;
+                    tr.appendChild(td);
+                });
+                table.appendChild(tr);
+            });
+
+            resultDiv.appendChild(table);
+        }
+
+    </script>
+</body>
+</html>
